@@ -15,6 +15,7 @@ export class TextblockEditor {
         this.pluginNames = ko.observableArray<string>();
         this.pluginNames.push("formatting");
         this.pluginNames.push("hyperlink-editor");
+        this.pluginNames.push("icon-picker");
     }
 
     @Param()
