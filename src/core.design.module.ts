@@ -58,6 +58,7 @@ import { ContentEditorModule } from "./content/ko";
 import { ViewStack } from "./ko/ui/viewStack";
 import { MediaDisplay } from "./workshops/media/ko/mediaDisplay";
 import { Lightbox } from "./workshops/media/ko/lightbox";
+import { LocalStorageCache } from "@paperbits/common/caching";
 
 
 export class CoreDesignModule implements IInjectorModule {
@@ -72,7 +73,7 @@ export class CoreDesignModule implements IInjectorModule {
         injector.bindSingleton("tray", Tray);
         injector.bindSingleton("viewStack", ViewStack);
         injector.bind("mediaDisplay", MediaDisplay);
-        
+        injector.bindInstance("changesCache", new LocalStorageCache("paperbits"));
         injector.bind("mediaHyperlinkProvider", MediaHyperlinkProvider);
         injector.bind("urlHyperlinkProvider", UrlHyperlinkProvider);
         injector.bind("gridEditor", GridEditor);
