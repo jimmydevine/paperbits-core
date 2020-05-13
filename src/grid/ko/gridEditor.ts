@@ -165,33 +165,34 @@ export class GridEditor {
             return;
         }
 
-        const element = this.activeHighlightedElement;
-        const bindings = GridHelper.getParentWidgetBindings(element);
-        const windgetIsInContent = bindings.some(x => x.model instanceof ContentModel || x.name === "email-layout");
+        // const element = this.activeHighlightedElement;
 
-        let layoutEditing = false;
 
-        const metadata = this.router.getCurrentUrlMetadata();
+        const elements = this.getUnderlyingElements();
+        const combo = elements
+            .map(element => {
+                const binding = GridHelper.getWidgetBinding(element);
 
-        if (metadata && metadata["routeKind"]) {
-            layoutEditing = metadata["routeKind"] === "layout";
-        }
+                if (binding) {
+                    return { binding: binding, element: element };
+                }
+                else {
+                    return null;
+                }
+            })
+            .find(binding => !!binding);
 
-        if ((!windgetIsInContent && !layoutEditing)) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            this.eventManager.dispatchEvent("InactiveLayoutHint");
+        if (!combo) {
             return;
         }
 
-        const widgetBinding = GridHelper.getWidgetBinding(element);
-
-        if (!widgetBinding) {
-            return;
-        }
+        const widgetBinding = combo.binding;
+        const element = combo.element;
 
         if (widgetBinding.readonly) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.eventManager.dispatchEvent("InactiveLayoutHint");
             return;
         }
 
@@ -377,7 +378,7 @@ export class GridEditor {
     }
 
     private onDelete(): void {
-        if (this.viewManager.mode === ViewManagerMode.selected  && this.selectedContextualEditor && this.selectedContextualEditor.deleteCommand) {
+        if (this.viewManager.mode === ViewManagerMode.selected && this.selectedContextualEditor && this.selectedContextualEditor.deleteCommand) {
             this.selectedContextualEditor.deleteCommand.callback();
         }
     }

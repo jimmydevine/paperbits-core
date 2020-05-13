@@ -9,6 +9,7 @@ import { IWidgetBinding } from "@paperbits/common/editing";
 import { EventManager } from "@paperbits/common/events";
 import { ContentModelBinder } from "..";
 import { PlaceholderModel } from "@paperbits/common/widgets/placeholder";
+import { PlaceholderViewModel } from "../../placeholder/ko";
 
 
 export class ContentViewModelBinder implements ViewModelBinder<ContentModel, ContentViewModel> {

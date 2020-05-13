@@ -93,6 +93,8 @@ export class WidgetBindingHandler {
                             while (nonVirtualElement !== null && nonVirtualElement.nodeName === "#comment");
                         }
 
+                        console.log(nonVirtualElement)
+
                         if (nonVirtualElement) {
                             nonVirtualElement["attachedViewModel"] = componentViewModel;
 

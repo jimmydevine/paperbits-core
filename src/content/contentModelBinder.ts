@@ -50,8 +50,11 @@ export class ContentModelBinder<TModel> implements IModelBinder<TModel> {
             contentModel.widgets = await this.getChildModels(contentContract.nodes, bindingContext);
         }
         else {
-            contentModel.widgets = [<WidgetModel>new PlaceholderModel("Content")];
+            contentModel.widgets = [];
         }
+        // else {
+        //     contentModel.widgets = [<WidgetModel>new PlaceholderModel("Page content", contentContract.type)];
+        // }
 
         return <any>contentModel;
     }
