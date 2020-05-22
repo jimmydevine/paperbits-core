@@ -43,12 +43,6 @@ export class CollapsiblePanelEditor {
     private updateObservables(): void {
         const viewport = this.viewManager.getViewport();
 
-        const localStyle = this.model.styles?.instance;
-
-        if (!localStyle) {
-            Objects.setValue(`styles/instance/key`, this.model, Utils.randomClassName());
-        }
-
         const containerConfig = Objects.getObjectAt<ContainerStylePluginConfig>(`instance/container/${viewport}`, this.model.styles);
         this.containerConfig(containerConfig);
 

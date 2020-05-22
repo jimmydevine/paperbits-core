@@ -8,7 +8,7 @@ import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorat
 import { CardModel } from "../cardModel";
 import { BackgroundStylePluginConfig, TypographyStylePluginConfig, ContainerStylePluginConfig } from "@paperbits/styles/contracts";
 import { EventManager } from "@paperbits/common/events";
-import { StyleHelper } from "@paperbits/common/styles/styleHelper";
+import { StyleHelper } from "@paperbits/common/styles";
 
 
 @Component({
@@ -69,8 +69,8 @@ export class CardEditor implements WidgetEditor<CardModel> {
         this.onChange(this.model);
     }
 
-    public onBackgroundUpdate(background: BackgroundStylePluginConfig): void {
-        StyleHelper.setPluginConfig(this.model.styles, "background", background);
+    public onBackgroundChange(pluginConfig: BackgroundStylePluginConfig): void {
+        StyleHelper.setPluginConfig(this.model.styles, "background", pluginConfig);
         this.onChange(this.model);
     }
 
