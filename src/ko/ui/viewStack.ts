@@ -55,10 +55,6 @@ export class ViewStack {
 
     public removeView(view: View): void {
         this.stack.remove(view);
-
-        if (view.returnFocusTo) {
-            view.returnFocusTo.focus();
-        }
     }
 
     public getViews(): View[] {
