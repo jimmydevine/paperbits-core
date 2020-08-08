@@ -309,11 +309,12 @@ export class BalloonBindingHandler {
                         return;
                     }
 
-                    if (activateOn === BalloonActivationOptions.click /* && document.activeElement === toggleElement */) {
-                        toggleElement["activeBalloon"]?.close();
-                    }
+                    // if (activateOn === BalloonActivationOptions.click /* && document.activeElement === toggleElement */) {
+                    //     toggleElement["activeBalloon"]?.close();
+                    // }
 
-                    toggleElement["activeBalloon"] = ballonHandle;
+                    // toggleElement["activeBalloon"]?.close();
+                   
 
                     view = {
                         close: close,
@@ -331,7 +332,11 @@ export class BalloonBindingHandler {
                     setImmediate(() => { // give chance to view stack to clear unrelated views
                         createBalloonElement();
                         createBalloonTip();
+
+                        viewStack.runHitTest(toggleElement);
                         viewStack.pushView(view);
+
+                        toggleElement["activeBalloon"] = ballonHandle;
 
                         balloonElement.classList.add("balloon-is-active");
                         requestAnimationFrame(updatePosition);
@@ -427,7 +432,7 @@ export class BalloonBindingHandler {
                 };
 
                 const onFocus = async (): Promise<void> => {
-                    open(toggleElement);
+                    open();
                 };
 
                 const onBlur = async (): Promise<void> => {
@@ -442,7 +447,7 @@ export class BalloonBindingHandler {
                             return;
                         }
 
-                        open(toggleElement);
+                        open();
                     }, options.activateDelay || 0);
                 };
 
@@ -487,9 +492,10 @@ export class BalloonBindingHandler {
                 }
 
                 toggleElement.addEventListener("keydown", onKeyDown);
-               
                 toggleElement.addEventListener("click", onClick);
-               
+                window.addEventListener("scroll", onScroll, true);
+                document.addEventListener("mousedown", onPointerDown, true);
+
 
                 switch (activateOn) {
                     case BalloonActivationOptions.click:
@@ -498,16 +504,15 @@ export class BalloonBindingHandler {
                     case BalloonActivationOptions.hoverOrFocus:
                         toggleElement.addEventListener("mouseenter", onMouseEnter);
                         toggleElement.addEventListener("mouseleave", onMouseLeave);
-                        toggleElement.addEventListener("focus", onFocus);
-                        toggleElement.addEventListener("blur", onBlur);
+                        // toggleElement.addEventListener("focus", onFocus);
+                        // toggleElement.addEventListener("blur", onBlur);
                         break;
 
                     default:
                         throw new Error(`Unknown balloon trigger event: ${activateOn}`);
                 }
 
-                window.addEventListener("scroll", onScroll, true);
-                document.addEventListener("mousedown", onPointerDown, true);
+
 
                 ko.utils.domNodeDisposal.addDisposeCallback(toggleElement, () => {
                     window.removeEventListener("mousedown", onPointerDown, true);
@@ -516,8 +521,8 @@ export class BalloonBindingHandler {
 
                     switch (activateOn) {
                         case BalloonActivationOptions.click:
-                           
-                           
+
+
                             break;
 
                         case BalloonActivationOptions.hoverOrFocus:

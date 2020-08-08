@@ -12,17 +12,21 @@ export class ViewStack {
     }
 
     private onPointerDown(event: MouseEvent): void {
-        const tagetElement = <HTMLElement>event.target;
+        const targetElement = <HTMLElement>event.target;
+        this.runHitTest(targetElement);
+    }
+
+    public runHitTest(targetElement: HTMLElement): void {
         const views = [...this.stack]; // clone array
 
         for (const view of views.reverse()) {
             let hit: boolean;
 
             if (view.hitTest) {
-                hit = view.hitTest(tagetElement);
+                hit = view.hitTest(targetElement);
             }
             else {
-                hit = !!Utils.closest(tagetElement, (node: HTMLElement) => node === view.element);
+                hit = !!Utils.closest(targetElement, (node: HTMLElement) => node === view.element);
             }
 
             if (hit) {
@@ -51,6 +55,7 @@ export class ViewStack {
 
     public pushView(view: View): void {
         this.stack.push(view);
+        console.log(this.stack.length);
     }
 
     public removeView(view: View): void {
@@ -62,6 +67,7 @@ export class ViewStack {
     }
 
     public clear(): void {
+        this.stack.forEach(view => view.close());
         this.stack = [];
     }
 }

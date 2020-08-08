@@ -299,6 +299,9 @@ export class DefaultViewManager implements ViewManager {
     }
 
     public openViewAsPopup(view: View): void {
+        debugger;
+        this.viewStack.clear();
+
         if (this.widgetEditor() === view) {
             return;
         }
