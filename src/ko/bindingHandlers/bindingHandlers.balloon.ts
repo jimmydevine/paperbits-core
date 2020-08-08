@@ -46,6 +46,7 @@ export class BalloonBindingHandler {
                 let balloonIsOpen = false;
                 let closeTimeout;
                 let createBalloonElement: () => void;
+                let activationImmediate = null;
 
                 if (options.component) {
                     createBalloonElement = () => {
@@ -309,13 +310,6 @@ export class BalloonBindingHandler {
                         return;
                     }
 
-                    // if (activateOn === BalloonActivationOptions.click /* && document.activeElement === toggleElement */) {
-                    //     toggleElement["activeBalloon"]?.close();
-                    // }
-
-                    // toggleElement["activeBalloon"]?.close();
-                   
-
                     view = {
                         close: close,
                         element: balloonElement,
@@ -476,7 +470,6 @@ export class BalloonBindingHandler {
 
                 const onClick = (event: MouseEvent): void => {
                     event.preventDefault();
-                    event.stopImmediatePropagation();
                 };
 
                 const onScroll = async (event: MouseEvent): Promise<void> => {
@@ -491,14 +484,14 @@ export class BalloonBindingHandler {
                     options.closeOn.subscribe(() => close());
                 }
 
-                toggleElement.addEventListener("keydown", onKeyDown);
+
                 toggleElement.addEventListener("click", onClick);
                 window.addEventListener("scroll", onScroll, true);
                 document.addEventListener("mousedown", onPointerDown, true);
 
-
                 switch (activateOn) {
                     case BalloonActivationOptions.click:
+                        toggleElement.addEventListener("keydown", onKeyDown);
                         break;
 
                     case BalloonActivationOptions.hoverOrFocus:
@@ -517,11 +510,11 @@ export class BalloonBindingHandler {
                 ko.utils.domNodeDisposal.addDisposeCallback(toggleElement, () => {
                     window.removeEventListener("mousedown", onPointerDown, true);
                     toggleElement.removeEventListener("click", onClick);
-                    toggleElement.removeEventListener("keydown", onKeyDown);
+
 
                     switch (activateOn) {
                         case BalloonActivationOptions.click:
-
+                            toggleElement.removeEventListener("keydown", onKeyDown);
 
                             break;
 
