@@ -113,6 +113,7 @@ export class BalloonBindingHandler {
 
                     const balloonTipSize = 10;
                     const egdeGap = 10;
+                    const padding = 10;
 
                     let balloonLeft;
                     let balloonRight;
@@ -133,11 +134,11 @@ export class BalloonBindingHandler {
                     if (preferredDirection === "vertical") {
                         if (spaceTop > spaceBottom) {
                             positionY = "top";
-                            availableSpaceY = spaceTop - egdeGap;
+                            availableSpaceY = spaceTop - egdeGap - padding;
                         }
                         else {
                             positionY = "bottom";
-                            availableSpaceY = spaceBottom - egdeGap;
+                            availableSpaceY = spaceBottom - egdeGap - padding;
                         }
                     }
                     else {
@@ -203,19 +204,19 @@ export class BalloonBindingHandler {
                     if (preferredDirection === "vertical") {
                         switch (positionY) {
                             case "top":
-                                balloonTop = triggerRect.top - balloonHeight;
+                                balloonTop = triggerRect.top - balloonHeight - padding;
                                 balloonLeft = triggerRect.left + Math.floor(triggerRect.width / 2) - Math.floor(balloonWidth / 2);
                                 balloonTipX = triggerRect.left + Math.floor(triggerRect.width / 2) - Math.floor(balloonTipSize / 2);
-                                balloonTipY = triggerRect.top - Math.floor(balloonTipSize / 2);
+                                balloonTipY = triggerRect.top - Math.floor(balloonTipSize / 2) - padding;
                                 balloonTipElement.classList.add("balloon-top");
                                 selectedPosition = "top";
                                 break;
 
                             case "bottom":
-                                balloonTop = triggerRect.top + triggerRect.height;
+                                balloonTop = triggerRect.top + triggerRect.height + padding;
                                 balloonLeft = triggerRect.left + Math.floor(triggerRect.width / 2) - Math.floor(balloonWidth / 2);
                                 balloonTipX = triggerRect.left + Math.floor(triggerRect.width / 2) - Math.floor(balloonTipSize / 2);
-                                balloonTipY = triggerRect.bottom - Math.floor(balloonTipSize / 2);
+                                balloonTipY = triggerRect.bottom - Math.floor(balloonTipSize / 2) + padding;
                                 balloonTipElement.classList.add("balloon-bottom");
                                 selectedPosition = "bottom";
                                 break;
@@ -225,8 +226,8 @@ export class BalloonBindingHandler {
                         switch (positionX) {
                             case "left":
                                 balloonTop = triggerRect.top + Math.floor(triggerRect.height / 2) - Math.floor(balloonHeight / 2);
-                                balloonLeft = triggerRect.left - balloonWidth - balloonTipSize;
-                                balloonTipX = triggerRect.left - balloonTipSize - Math.floor(balloonTipSize / 2);
+                                balloonLeft = triggerRect.left - balloonWidth - padding;
+                                balloonTipX = triggerRect.left - Math.floor(balloonTipSize / 2) - padding;
                                 balloonTipY = triggerRect.top + Math.floor(triggerRect.height / 2) - Math.floor(balloonTipSize / 2);
                                 balloonTipElement.classList.add("balloon-left");
                                 selectedPosition = "left";
@@ -234,8 +235,8 @@ export class BalloonBindingHandler {
 
                             case "right":
                                 balloonTop = triggerRect.top + Math.floor(triggerRect.height / 2) - Math.floor(balloonHeight / 2);
-                                balloonLeft = triggerRect.right + balloonTipSize;
-                                balloonTipX = triggerRect.right + Math.floor(balloonTipSize / 2);
+                                balloonLeft = triggerRect.right + padding;
+                                balloonTipX = triggerRect.right - Math.floor(balloonTipSize / 2) + padding;
                                 balloonTipY = triggerRect.top + Math.floor(triggerRect.height / 2) - Math.floor(balloonTipSize / 2);
                                 balloonTipElement.classList.add("balloon-right");
                                 selectedPosition = "right";
