@@ -24,7 +24,7 @@
 
 <!-- ko foreach: { data: buttons, as: 'button' } -->
 <button class="toolbox-btn"
-    data-bind="attr: { 'aria-label': button.title }, tooltip: button.helpText, click: button.onActivate, disable: button.disabled">
+    data-bind="attr: { 'aria-label': button.title }, tooltip: button.tooltip, click: button.onActivate, disable: button.disabled">
     <i data-bind="css: button.iconClass"></i>
 </button>
 <!-- /ko -->
