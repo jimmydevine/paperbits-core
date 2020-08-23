@@ -1,6 +1,9 @@
+import { LocalStyles } from "@paperbits/common/styles";
+
 export class MapModel {
-    location: string;
-    layout?: string;
-    caption?: string;
-    zoomControl?: string;
+    public location: string;
+    public layout?: string;
+    public caption?: string;
+    public zoomControl?: string;
+    public styles: LocalStyles;
 }

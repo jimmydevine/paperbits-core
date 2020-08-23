@@ -12,12 +12,13 @@ export class MapModelBinder implements IModelBinder<MapModel> {
         return model instanceof MapModel;
     }
 
-    public async contractToModel(mapNode: MapContract): Promise<MapModel> {
+    public async contractToModel(contract: MapContract): Promise<MapModel> {
         const model = new MapModel();
-        model.caption = mapNode.caption;
-        model.layout = mapNode.layout;
-        model.location = mapNode.location;
-        model.zoomControl = mapNode.zoomControl;
+        model.caption = contract.caption;
+        model.layout = contract.layout;
+        model.location = contract.location;
+        model.zoomControl = contract.zoomControl;
+        model.styles = contract.styles || { appearance: "components/button/default" };
 
         return model;
     }

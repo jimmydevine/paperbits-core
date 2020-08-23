@@ -21,4 +21,6 @@ export interface MapContract extends Contract {
      * Indicates, whether zoom controls need to be displayed.
      */
     zoomControl?: string;
+
+    styles?: any;
 }

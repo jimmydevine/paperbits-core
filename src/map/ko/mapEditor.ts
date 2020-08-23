@@ -2,6 +2,7 @@
 import template from "./mapEditor.html";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
 import { MapModel } from "../mapModel";
+import { SizeStylePluginConfig } from "@paperbits/styles/contracts";
 
 @Component({
     selector: "paperbits-map-editor",
@@ -12,6 +13,7 @@ export class MapEditor {
     public caption: ko.Observable<string>;
     public zoomControl: ko.Observable<boolean>;
     public layout: ko.Observable<string>;
+    public readonly sizeConfig: ko.Observable<SizeStylePluginConfig>;
 
     constructor() {
         this.location = ko.observable<string>();
