@@ -58,6 +58,7 @@ import { ViewStack } from "./ko/ui/viewStack";
 import { MediaDisplay } from "./workshops/media/ko/mediaDisplay";
 import { Lightbox } from "./workshops/media/ko/lightbox";
 import { LocalStorageCache } from "@paperbits/common/caching";
+import { MapDesignModule } from "./map/ko/map.design.module";
 
 
 export class CoreDesignModule implements IInjectorModule {
@@ -99,6 +100,7 @@ export class CoreDesignModule implements IInjectorModule {
         injector.bind("roleInput", RoleInput);
         injector.bind("spinner", Spinner);
         injector.bindSingleton("mediaPermalinkResolver", MediaPermalinkResolver);
+        injector.bindModule(new MapDesignModule());
         injector.bindModule(new TextblockEditorModule());
         injector.bindModule(new PictureDesignModule());
         injector.bindModule(new ButtonEditorModule());
