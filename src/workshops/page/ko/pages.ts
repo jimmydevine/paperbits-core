@@ -20,7 +20,6 @@ export class PagesWorkshop {
 
     constructor(
         private readonly pageService: IPageService,
-        private readonly router: Router,
         private readonly viewManager: ViewManager
     ) {
         this.pages = ko.observableArray<PageItem>();
