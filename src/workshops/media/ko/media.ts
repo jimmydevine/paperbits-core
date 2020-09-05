@@ -18,7 +18,7 @@ import { Query, Operator } from "@paperbits/common/persistence";
     template: template
 })
 export class MediaWorkshop {
-    private nextPageQuery: Query<any>;
+    private nextPageQuery: Query<MediaContract>;
 
     public readonly searchPattern: ko.Observable<string>;
     public readonly mediaItems: ko.ObservableArray<MediaItem>;
