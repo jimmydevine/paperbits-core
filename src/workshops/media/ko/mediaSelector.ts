@@ -21,7 +21,6 @@ export class MediaSelector {
     public readonly searchPattern: ko.Observable<string>;
     public readonly mediaItems: ko.ObservableArray<MediaItem>;
     public readonly working: ko.Observable<boolean>;
-    private preSelectedModel: HyperlinkModel;
 
     @Param()
     public selectedMedia: ko.Observable<MediaItem>;
@@ -41,7 +40,6 @@ export class MediaSelector {
         private readonly viewManager: ViewManager,
         private readonly widgetService: IWidgetService
     ) {
-        // setting up...
         this.mediaItems = ko.observableArray<MediaItem>();
         this.selectedMedia = ko.observable<MediaItem>();
         this.searchPattern = ko.observable<string>();
@@ -70,19 +68,6 @@ export class MediaSelector {
 
         this.nextPageQuery = query;
         await this.loadNextPage();
-        // const mediaFiles = await this.mediaService.search(searchPattern);
-
-        // mediaFiles.forEach(async media => {
-        //     const mediaItem = new MediaItem(media);
-        //     const descriptor = this.findContentDescriptor(media);
-
-        //     if (descriptor && descriptor.getWidgetOrder) {
-        //         const order = await descriptor.getWidgetOrder();
-        //         mediaItem.widgetOrder = order;
-        //     }
-
-        //     this.mediaItems.push(mediaItem);
-        // });
     }
 
     public async loadNextPage(): Promise<void> {
@@ -92,7 +77,6 @@ export class MediaSelector {
 
         this.working(true);
 
-        await Utils.delay(2000);
         const pageOfResults = await this.mediaService.search2(this.nextPageQuery);
         this.nextPageQuery = pageOfResults.nextPage;
 

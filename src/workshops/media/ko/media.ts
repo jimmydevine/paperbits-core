@@ -60,19 +60,6 @@ export class MediaWorkshop {
 
         this.nextPageQuery = query;
         await this.loadNextPage();
-        // const mediaFiles = await this.mediaService.search(searchPattern);
-
-        // mediaFiles.forEach(async media => {
-        //     const mediaItem = new MediaItem(media);
-        //     const descriptor = this.findContentDescriptor(media);
-
-        //     if (descriptor && descriptor.getWidgetOrder) {
-        //         const order = await descriptor.getWidgetOrder();
-        //         mediaItem.widgetOrder = order;
-        //     }
-
-        //     this.mediaItems.push(mediaItem);
-        // });
     }
 
     public async loadNextPage(): Promise<void> {
@@ -82,7 +69,6 @@ export class MediaWorkshop {
 
         this.working(true);
 
-        await Utils.delay(2000);
         const pageOfResults = await this.mediaService.search2(this.nextPageQuery);
         this.nextPageQuery = pageOfResults.nextPage;
 
@@ -90,24 +76,6 @@ export class MediaWorkshop {
         this.mediaItems.push(...mediaItems);
 
         this.working(false);
-    }
-
-    private findContentDescriptor(media: MediaContract): IContentDescriptor {
-        let result: IContentDescriptor;
-
-        for (const handler of this.dropHandlers) {
-            if (!handler.getContentDescriptorFromMedia) {
-                continue;
-            }
-
-            result = handler.getContentDescriptorFromMedia(media);
-
-            if (result) {
-                return result;
-            }
-        }
-
-        return result;
     }
 
     public async uploadMedia(): Promise<void> {
