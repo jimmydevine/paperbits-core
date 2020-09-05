@@ -11,12 +11,15 @@ import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { ChangeRateLimit } from "@paperbits/common/ko/consts";
+import { Query, Operator } from "@paperbits/common/persistence";
 
 @Component({
     selector: "media",
     template: template
 })
 export class MediaWorkshop {
+    private nextPageQuery: Query<any>;
+
     public readonly searchPattern: ko.Observable<string>;
     public readonly mediaItems: ko.ObservableArray<MediaItem>;
     public readonly selectedMediaItem: ko.Observable<MediaItem>;
@@ -29,7 +32,7 @@ export class MediaWorkshop {
         private readonly dropHandlers: IContentDropHandler[],
         private readonly widgetService: IWidgetService
     ) {
-        this.working = ko.observable(true);
+        this.working = ko.observable(false);
         this.mediaItems = ko.observableArray<MediaItem>();
         this.searchPattern = ko.observable<string>("");
         this.selectedMediaItem = ko.observable<MediaItem>();
@@ -45,22 +48,46 @@ export class MediaWorkshop {
     }
 
     private async searchMedia(searchPattern: string = ""): Promise<void> {
-        this.working(true);
         this.mediaItems([]);
 
-        const mediaFiles = await this.mediaService.search(searchPattern);
+        let query = Query
+            .from<MediaContract>()
+            .orderBy("fileName");
 
-        mediaFiles.forEach(async media => {
-            const mediaItem = new MediaItem(media);
-            const descriptor = this.findContentDescriptor(media);
+        if (searchPattern) {
+            query = query.where("fileName", Operator.contains, searchPattern);
+        }
 
-            if (descriptor && descriptor.getWidgetOrder) {
-                const order = await descriptor.getWidgetOrder();
-                mediaItem.widgetOrder = order;
-            }
+        this.nextPageQuery = query;
+        await this.loadNextPage();
+        // const mediaFiles = await this.mediaService.search(searchPattern);
 
-            this.mediaItems.push(mediaItem);
-        });
+        // mediaFiles.forEach(async media => {
+        //     const mediaItem = new MediaItem(media);
+        //     const descriptor = this.findContentDescriptor(media);
+
+        //     if (descriptor && descriptor.getWidgetOrder) {
+        //         const order = await descriptor.getWidgetOrder();
+        //         mediaItem.widgetOrder = order;
+        //     }
+
+        //     this.mediaItems.push(mediaItem);
+        // });
+    }
+
+    public async loadNextPage(): Promise<void> {
+        if (!this.nextPageQuery || this.working()) {
+            return;
+        }
+
+        this.working(true);
+
+        await Utils.delay(2000);
+        const pageOfResults = await this.mediaService.search2(this.nextPageQuery);
+        this.nextPageQuery = pageOfResults.nextPage;
+
+        const mediaItems = pageOfResults.value.map(page => new MediaItem(page));
+        this.mediaItems.push(...mediaItems);
 
         this.working(false);
     }

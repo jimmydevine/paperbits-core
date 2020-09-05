@@ -14,13 +14,12 @@ import { Query, Operator } from "@paperbits/common/persistence";
     template: template
 })
 export class PageSelector implements IResourceSelector<HyperlinkModel> {
+    private preSelectedModel: HyperlinkModel;
     private nextPageQuery: Query<PageContract>;
 
     public readonly searchPattern: ko.Observable<string>;
     public readonly pages: ko.ObservableArray<PageItem>;
     public readonly working: ko.Observable<boolean>;
-
-    private preSelectedModel: HyperlinkModel;
 
     @Param()
     public selectedPage: ko.Observable<PageItem>;

@@ -1,5 +1,4 @@
 ﻿import * as ko from "knockout";
-import * as Utils from "@paperbits/common/utils";
 import template from "./pages.html";
 import { IPageService, PageContract } from "@paperbits/common/pages";
 import { ViewManager, View } from "@paperbits/common/ui";
@@ -62,7 +61,6 @@ export class PagesWorkshop {
 
         this.working(true);
 
-        await Utils.delay(2000);
         const pageOfResults = await this.pageService.search2(this.nextPageQuery);
         this.nextPageQuery = pageOfResults.nextPage;
 
@@ -98,7 +96,7 @@ export class PagesWorkshop {
     public async addPage(): Promise<void> {
         this.working(true);
 
-        const pageUrl = "/new";
+        const pageUrl = "/new-page";
 
         const pageContract = await this.pageService.createPage(pageUrl, "New page", "", "");
         const pageItem = new PageItem(pageContract);
