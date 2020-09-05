@@ -7,12 +7,15 @@ import { Component, Param, Event, OnMounted } from "@paperbits/common/ko/decorat
 import { HyperlinkModel } from "@paperbits/common/permalinks";
 import { AnchorUtils } from "../../../text/anchorUtils";
 import { ChangeRateLimit } from "@paperbits/common/ko/consts";
+import { Query, Operator } from "@paperbits/common/persistence";
 
 @Component({
     selector: "page-selector",
     template: template
 })
 export class PageSelector implements IResourceSelector<HyperlinkModel> {
+    private nextPageQuery: Query<PageContract>;
+
     public readonly searchPattern: ko.Observable<string>;
     public readonly pages: ko.ObservableArray<PageItem>;
     public readonly working: ko.Observable<boolean>;
@@ -45,12 +48,32 @@ export class PageSelector implements IResourceSelector<HyperlinkModel> {
     }
 
     public async searchPages(searchPattern: string = ""): Promise<void> {
+        this.pages([]);
+
+        const query = Query
+            .from<PageContract>()
+            .orderBy(`title`);
+
+        if (searchPattern) {
+            query.where(`title`, Operator.contains, searchPattern);
+        }
+
+        this.nextPageQuery = query;
+        await this.loadNextPage();
+    }
+
+    public async loadNextPage(): Promise<void> {
+        if (!this.nextPageQuery || this.working()) {
+            return;
+        }
+
         this.working(true);
 
-        const pages = await this.pageService.search(searchPattern);
-        const pageItems = pages.map(page => new PageItem(page));
+        const pageOfResults = await this.pageService.search2(this.nextPageQuery);
+        this.nextPageQuery = pageOfResults.nextPage;
 
-        this.pages(pageItems);
+        const pageItems = pageOfResults.value.map(page => new PageItem(page));
+        this.pages.push(...pageItems);
 
         if (!this.selectedPage() && this.preSelectedModel) {
             const currentPermalink = this.preSelectedModel.href;
