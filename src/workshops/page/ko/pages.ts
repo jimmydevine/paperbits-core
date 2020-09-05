@@ -1,7 +1,7 @@
 ﻿import * as ko from "knockout";
+import * as Utils from "@paperbits/common/utils";
 import template from "./pages.html";
 import { IPageService, PageContract } from "@paperbits/common/pages";
-import { Router } from "@paperbits/common/routing";
 import { ViewManager, View } from "@paperbits/common/ui";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { PageItem } from "./pageItem";
@@ -28,7 +28,7 @@ export class PagesWorkshop {
         this.pages = ko.observableArray<PageItem>();
         this.selectedPage = ko.observable<PageItem>();
         this.searchPattern = ko.observable<string>("");
-        this.working = ko.observable(true);
+        this.working = ko.observable(false);
     }
 
     @OnMounted()
@@ -41,7 +41,6 @@ export class PagesWorkshop {
     }
 
     private async searchPages(searchPattern: string = ""): Promise<void> {
-        this.working(true);
         this.pages([]);
 
         const query = Query
@@ -52,20 +51,25 @@ export class PagesWorkshop {
             query.where(`title`, Operator.contains, searchPattern);
         }
 
-        const pages = await this.pageService.search2(query);
-        this.nextPageQuery = pages.nextPage;
-        const pageItems = pages.value.map(page => new PageItem(page));
-
-        this.pages.push(...pageItems);
-        this.working(false);
+        this.nextPageQuery = query;
+        await this.loadNextPage();
     }
 
     public async loadNextPage(): Promise<void> {
-        const pages = await this.pageService.search2(this.nextPageQuery);
-        this.nextPageQuery = pages.nextPage;
-        const pageItems = pages.value.map(page => new PageItem(page));
+        if (!this.nextPageQuery || this.working()) {
+            return;
+        }
 
+        this.working(true);
+
+        await Utils.delay(2000);
+        const pageOfResults = await this.pageService.search2(this.nextPageQuery);
+        this.nextPageQuery = pageOfResults.nextPage;
+
+        const pageItems = pageOfResults.value.map(page => new PageItem(page));
         this.pages.push(...pageItems);
+
+        this.working(false);
     }
 
     public selectPage(pageItem: PageItem): void {
