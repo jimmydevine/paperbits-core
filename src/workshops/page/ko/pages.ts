@@ -39,7 +39,7 @@ export class PagesWorkshop {
             .subscribe(this.searchPages);
     }
 
-    private async searchPages(searchPattern: string = ""): Promise<void> {
+    public async searchPages(searchPattern: string = ""): Promise<void> {
         this.pages([]);
 
         const query = Query
