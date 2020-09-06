@@ -1,10 +1,8 @@
 import * as ko from "knockout";
-import * as Utils from "@paperbits/common/utils";
 import template from "./urlSelector.html";
 import { UrlItem } from "./urlItem";
 import { IUrlService, UrlContract } from "@paperbits/common/urls";
 import { Component, Event, OnMounted } from "@paperbits/common/ko/decorators";
-import { HyperlinkModel } from "@paperbits/common/permalinks";
 import { ChangeRateLimit } from "@paperbits/common/ko/consts";
 import { Query, Operator } from "@paperbits/common/persistence";
 
@@ -66,7 +64,6 @@ export class UrlSelector {
 
         this.working(true);
 
-        await Utils.delay(2000);
         const pageOfResults = await this.urlService.search(this.nextPageQuery);
         this.nextPageQuery = pageOfResults.nextPage;
 
