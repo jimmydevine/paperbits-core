@@ -1,6 +1,6 @@
 import * as ko from "knockout";
-import template from "./mediaSelector.html";
 import * as Utils from "@paperbits/common/utils";
+import template from "./mediaSelector.html";
 import { MediaItem } from "./mediaItem";
 import { IMediaService, MediaContract } from "@paperbits/common/media";
 import { ViewManager } from "@paperbits/common/ui";
@@ -97,10 +97,6 @@ export class MediaSelector {
         if (this.onHyperlinkSelect) {
             this.onHyperlinkSelect(media.getHyperlink());
         }
-    }
-
-    public selectResource(resource: HyperlinkModel): void {
-        this.preSelectedModel = resource;
     }
 
     public selectNone(): void {

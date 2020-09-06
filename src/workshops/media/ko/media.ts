@@ -1,9 +1,9 @@
 ﻿import * as ko from "knockout";
-import template from "./media.html";
 import * as Utils from "@paperbits/common/utils";
+import template from "./media.html";
 import { IMediaService } from "@paperbits/common/media";
 import { ViewManager, View } from "@paperbits/common/ui";
-import { IContentDropHandler, IContentDescriptor } from "@paperbits/common/editing";
+import { IContentDropHandler } from "@paperbits/common/editing";
 import { MediaItem, defaultFileName, defaultURL } from "./mediaItem";
 import { MediaContract } from "@paperbits/common/media/mediaContract";
 import { Keys } from "@paperbits/common/keyboard";
