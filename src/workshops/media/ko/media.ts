@@ -3,7 +3,6 @@ import * as Utils from "@paperbits/common/utils";
 import template from "./media.html";
 import { IMediaService } from "@paperbits/common/media";
 import { ViewManager, View } from "@paperbits/common/ui";
-import { IContentDropHandler } from "@paperbits/common/editing";
 import { MediaItem, defaultFileName, defaultURL } from "./mediaItem";
 import { MediaContract } from "@paperbits/common/media/mediaContract";
 import { Keys } from "@paperbits/common/keyboard";
@@ -29,7 +28,6 @@ export class MediaWorkshop {
         private readonly eventManager: EventManager,
         private readonly mediaService: IMediaService,
         private readonly viewManager: ViewManager,
-        private readonly dropHandlers: IContentDropHandler[],
         private readonly widgetService: IWidgetService
     ) {
         this.working = ko.observable(false);
