@@ -61,7 +61,7 @@ export class PagesWorkshop {
 
         this.working(true);
 
-        const pageOfResults = await this.pageService.search2(this.nextPageQuery);
+        const pageOfResults = await this.pageService.search(this.nextPageQuery);
         this.nextPageQuery = pageOfResults.nextPage;
 
         const pageItems = pageOfResults.value.map(page => new PageItem(page));
