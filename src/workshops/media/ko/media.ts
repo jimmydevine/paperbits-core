@@ -67,7 +67,7 @@ export class MediaWorkshop {
 
         this.working(true);
 
-        const pageOfResults = await this.mediaService.search2(this.nextPageQuery);
+        const pageOfResults = await this.mediaService.search(this.nextPageQuery);
         this.nextPageQuery = pageOfResults.nextPage;
 
         const mediaItems = pageOfResults.value.map(page => new MediaItem(page));

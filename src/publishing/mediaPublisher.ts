@@ -1,7 +1,7 @@
 import parallel from "await-parallel-limit";
 import { HttpClient } from "@paperbits/common/http";
 import { IPublisher } from "@paperbits/common/publishing";
-import { IBlobStorage } from "@paperbits/common/persistence";
+import { IBlobStorage, Query, Page } from "@paperbits/common/persistence";
 import { IMediaService, MediaContract } from "@paperbits/common/media";
 import { Logger } from "@paperbits/common/logging";
 
@@ -49,19 +49,23 @@ export class MediaPublisher implements IPublisher {
         }
     }
 
-    private async renderMedia(mediaFiles: MediaContract[]): Promise<void> {
-        const tasks = [];
-
-        mediaFiles.forEach(mediaFile => {
-           
-            tasks.push(() => this.renderMediaFile(mediaFile));
-        });
-
-        await parallel(tasks, 10);
-    }
-
     public async publish(): Promise<void> {
-        const mediaFiles = await this.mediaService.search();
-        await this.renderMedia(mediaFiles);
+        let pagesOfResults: Page<MediaContract[]>;
+        let nextPageQuery: Query<MediaContract> = Query.from<MediaContract>();
+
+        do {
+            const tasks = [];
+            pagesOfResults = await this.mediaService.search(nextPageQuery);
+            nextPageQuery = pagesOfResults.nextPage;
+
+            const mediaFiles = pagesOfResults.value;
+
+            for (const mediaFile of mediaFiles) {
+                tasks.push(() => this.renderMediaFile(mediaFile));
+            }
+
+            await parallel(tasks, 10);
+        }
+        while (nextPageQuery);
     }
 }

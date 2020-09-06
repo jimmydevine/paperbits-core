@@ -19,10 +19,10 @@ import { MemoryCache } from "@paperbits/common/caching";
 export class CorePublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindCollection("publishers");
-        // injector.bindToCollection("publishers", AssetPublisher);
+        injector.bindToCollection("publishers", AssetPublisher);
+        injector.bindToCollection("publishers", MediaPublisher);
         injector.bindToCollection("publishers", PagePublisher);
         // // injector.bindToCollection("publishers", BlogPublisher);
-        // injector.bindToCollection("publishers", MediaPublisher);
         injector.bindSingleton("sitePublisher", SitePublisher);
         injector.bindSingleton("sitemapBuilder", SitemapBuilder);
         injector.bindSingleton("searchIndexBuilder", SearchIndexBuilder);
