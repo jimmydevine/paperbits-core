@@ -177,7 +177,7 @@ export class PagePublisher implements IPublisher {
     }
 
     private async publishNonLocalized(siteSettings: SiteSettingsContract): Promise<void> {
-        let pagesOfResults: Page<PageContract[]>;
+        let pagesOfResults: Page<PageContract>;
         let nextPageQuery: Query<PageContract> = Query.from<PageContract>();
 
         do {
@@ -204,7 +204,7 @@ export class PagePublisher implements IPublisher {
                 ? null
                 : locale.code;
 
-            let pagesOfResults: Page<PageContract[]>;
+            let pagesOfResults: Page<PageContract>;
             let nextPageQuery: Query<PageContract> = Query.from<PageContract>();
 
             do {

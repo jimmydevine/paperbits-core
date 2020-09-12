@@ -50,7 +50,7 @@ export class MediaPublisher implements IPublisher {
     }
 
     public async publish(): Promise<void> {
-        let pagesOfResults: Page<MediaContract[]>;
+        let pagesOfResults: Page<MediaContract>;
         let nextPageQuery: Query<MediaContract> = Query.from<MediaContract>();
 
         do {
