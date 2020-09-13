@@ -5,7 +5,7 @@ import { ViewManager, View } from "@paperbits/common/ui";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { PageItem } from "./pageItem";
 import { ChangeRateLimit } from "@paperbits/common/ko/consts";
-import { Query, Operator } from "@paperbits/common/persistence";
+import { Query, Operator, Page } from "@paperbits/common/persistence";
 
 
 @Component({
@@ -13,7 +13,7 @@ import { Query, Operator } from "@paperbits/common/persistence";
     template: template
 })
 export class PagesWorkshop {
-    private nextPageQuery: Query<PageContract>;
+    private currentPage: Page<PageContract>;
 
     public readonly searchPattern: ko.Observable<string>;
     public readonly pages: ko.ObservableArray<PageItem>;
@@ -50,21 +50,24 @@ export class PagesWorkshop {
             query.where(`title`, Operator.contains, searchPattern);
         }
 
-        this.nextPageQuery = query;
-        await this.loadNextPage();
+        const pageOfResults = await this.pageService.search(query);
+        this.currentPage = pageOfResults;
+
+        const pageItems = pageOfResults.value.map(page => new PageItem(page));
+        this.pages.push(...pageItems);
     }
 
     public async loadNextPage(): Promise<void> {
-        if (!this.nextPageQuery || this.working()) {
+        if (!this.currentPage.takeNext || this.working()) {
+            this.loadNextPage = null;
             return;
         }
 
         this.working(true);
 
-        const pageOfResults = await this.pageService.search(this.nextPageQuery);
-        this.nextPageQuery = pageOfResults.nextPage;
+        this.currentPage = await this.currentPage.takeNext();
 
-        const pageItems = pageOfResults.value.map(page => new PageItem(page));
+        const pageItems = this.currentPage.value.map(page => new PageItem(page));
         this.pages.push(...pageItems);
 
         this.working(false);
