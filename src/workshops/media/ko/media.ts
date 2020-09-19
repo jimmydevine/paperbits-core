@@ -10,14 +10,14 @@ import { EventManager } from "@paperbits/common/events";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { ChangeRateLimit } from "@paperbits/common/ko/consts";
-import { Query, Operator } from "@paperbits/common/persistence";
+import { Query, Operator, Page } from "@paperbits/common/persistence";
 
 @Component({
     selector: "media",
     template: template
 })
 export class MediaWorkshop {
-    private nextPageQuery: Query<MediaContract>;
+   private currentPage: Page<MediaContract>;
 
     public readonly searchPattern: ko.Observable<string>;
     public readonly mediaItems: ko.ObservableArray<MediaItem>;
@@ -48,29 +48,32 @@ export class MediaWorkshop {
     private async searchMedia(searchPattern: string = ""): Promise<void> {
         this.mediaItems([]);
 
-        let query = Query
+        const query = Query
             .from<MediaContract>()
-            .orderBy("fileName");
+            .orderBy(`title`);
 
         if (searchPattern) {
-            query = query.where("fileName", Operator.contains, searchPattern);
+            query.where(`title`, Operator.contains, searchPattern);
         }
 
-        this.nextPageQuery = query;
-        await this.loadNextPage();
+        const mediaOfResults = await this.mediaService.search(query);
+        this.currentPage = mediaOfResults;
+
+        const mediaItems = mediaOfResults.value.map(media => new MediaItem(media));
+        this.mediaItems.push(...mediaItems);
     }
 
     public async loadNextPage(): Promise<void> {
-        if (!this.nextPageQuery || this.working()) {
+        if (!this.currentPage?.takeNext || this.working()) {
+            this.loadNextPage = null;
             return;
         }
 
         this.working(true);
 
-        const pageOfResults = await this.mediaService.search(this.nextPageQuery);
-        this.nextPageQuery = pageOfResults.nextPage;
+        this.currentPage = await this.currentPage.takeNext();
 
-        const mediaItems = pageOfResults.value.map(page => new MediaItem(page));
+        const mediaItems = this.currentPage.value.map(page => new MediaItem(page));
         this.mediaItems.push(...mediaItems);
 
         this.working(false);

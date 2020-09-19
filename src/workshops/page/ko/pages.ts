@@ -58,7 +58,7 @@ export class PagesWorkshop {
     }
 
     public async loadNextPage(): Promise<void> {
-        if (!this.currentPage.takeNext || this.working()) {
+        if (!this.currentPage?.takeNext || this.working()) {
             this.loadNextPage = null;
             return;
         }
