@@ -17,8 +17,7 @@ import { Query, Operator, Page } from "@paperbits/common/persistence";
     template: template
 })
 export class MediaWorkshop {
-   private currentPage: Page<MediaContract>;
-
+    private currentPage: Page<MediaContract>;
     public readonly searchPattern: ko.Observable<string>;
     public readonly mediaItems: ko.ObservableArray<MediaItem>;
     public readonly selectedMediaItem: ko.Observable<MediaItem>;
@@ -45,7 +44,8 @@ export class MediaWorkshop {
             .subscribe(this.searchMedia);
     }
 
-    private async searchMedia(searchPattern: string = ""): Promise<void> {
+    public async searchMedia(searchPattern: string = ""): Promise<void> {
+        this.working(true);
         this.mediaItems([]);
 
         const query = Query
@@ -61,11 +61,12 @@ export class MediaWorkshop {
 
         const mediaItems = mediaOfResults.value.map(media => new MediaItem(media));
         this.mediaItems.push(...mediaItems);
+
+        this.working(false);
     }
 
     public async loadNextPage(): Promise<void> {
         if (!this.currentPage?.takeNext || this.working()) {
-            this.loadNextPage = null;
             return;
         }
 

@@ -9,15 +9,14 @@ import { Component, Param, Event, OnMounted } from "@paperbits/common/ko/decorat
 import { IWidgetService } from "@paperbits/common/widgets";
 import { HyperlinkModel } from "@paperbits/common/permalinks/hyperlinkModel";
 import { ChangeRateLimit } from "@paperbits/common/ko/consts";
-import { Query, Operator } from "@paperbits/common/persistence";
+import { Query, Operator, Page } from "@paperbits/common/persistence";
 
 @Component({
     selector: "media-selector",
     template: template
 })
 export class MediaSelector {
-    private nextPageQuery: Query<MediaContract>;
-    
+    private currentPage: Page<MediaContract>;
     public readonly searchPattern: ko.Observable<string>;
     public readonly mediaItems: ko.ObservableArray<MediaItem>;
     public readonly working: ko.Observable<boolean>;
@@ -55,37 +54,41 @@ export class MediaSelector {
             .subscribe(this.searchMedia);
     }
 
-    private async searchMedia(searchPattern: string = ""): Promise<void> {
+    public async searchMedia(searchPattern: string = ""): Promise<void> {
+        this.working(true);
         this.mediaItems([]);
 
-        let query = Query
+        const query = Query
             .from<MediaContract>()
-            .orderBy("fileName");
+            .orderBy(`fileName`);
 
         if (searchPattern) {
-            query = query.where("fileName", Operator.contains, searchPattern);
+            query.where(`fileName`, Operator.contains, searchPattern);
         }
 
-        this.nextPageQuery = query;
-        await this.loadNextPage();
-    }
+        const mediaOfResults = await this.mediaService.search(query);
+        this.currentPage = mediaOfResults;
 
-    public async loadNextPage(): Promise<void> {
-        if (!this.nextPageQuery || this.working()) {
-            return;
-        }
-
-        this.working(true);
-
-        const pageOfResults = await this.mediaService.search(this.nextPageQuery);
-        this.nextPageQuery = pageOfResults.nextPage;
-
-        const mediaItems = pageOfResults.value.map(page => new MediaItem(page));
+        const mediaItems = mediaOfResults.value.map(media => new MediaItem(media));
         this.mediaItems.push(...mediaItems);
 
         this.working(false);
     }
 
+    public async loadNextPage(): Promise<void> {
+        if (!this.currentPage?.takeNext || this.working()) {
+            return;
+        }
+
+        this.working(true);
+
+        this.currentPage = await this.currentPage.takeNext();
+
+        const mediaItems = this.currentPage.value.map(page => new MediaItem(page));
+        this.mediaItems.push(...mediaItems);
+
+        this.working(false);
+    }
 
     public selectMedia(media: MediaItem): void {
         this.selectedMedia(media);

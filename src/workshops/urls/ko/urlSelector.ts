@@ -4,15 +4,14 @@ import { UrlItem } from "./urlItem";
 import { IUrlService, UrlContract } from "@paperbits/common/urls";
 import { Component, Event, OnMounted } from "@paperbits/common/ko/decorators";
 import { ChangeRateLimit } from "@paperbits/common/ko/consts";
-import { Query, Operator } from "@paperbits/common/persistence";
+import { Query, Operator, Page } from "@paperbits/common/persistence";
 
 @Component({
     selector: "url-selector",
     template: template
 })
 export class UrlSelector {
-    private nextPageQuery: Query<UrlContract>;
-
+    private currentPage: Page<UrlContract>;
     public readonly searchPattern: ko.Observable<string>;
     public readonly urls: ko.ObservableArray<UrlItem>;
     public readonly uri: ko.Observable<string>;
@@ -42,33 +41,38 @@ export class UrlSelector {
             .subscribe(this.searchUrls);
     }
     
-    private async searchUrls(searchPattern: string = ""): Promise<void> {
+    public async searchUrls(searchPattern: string = ""): Promise<void> {
+        this.working(true);
         this.urls([]);
 
-        let query = Query
+        const query = Query
             .from<UrlContract>()
-            .orderBy("title");
+            .orderBy(`title`);
 
         if (searchPattern) {
-            query = query.where("title", Operator.contains, searchPattern);
+            query.where(`title`, Operator.contains, searchPattern);
         }
 
-        this.nextPageQuery = query;
-        await this.loadNextPage();
+        const pageOfResults = await this.urlService.search(query);
+        this.currentPage = pageOfResults;
+
+        const urlItems = pageOfResults.value.map(media => new UrlItem(media));
+        this.urls.push(...urlItems);
+
+        this.working(false);
     }
 
     public async loadNextPage(): Promise<void> {
-        if (!this.nextPageQuery || this.working()) {
+        if (!this.currentPage?.takeNext || this.working()) {
             return;
         }
 
         this.working(true);
 
-        const pageOfResults = await this.urlService.search(this.nextPageQuery);
-        this.nextPageQuery = pageOfResults.nextPage;
+        this.currentPage = await this.currentPage.takeNext();
 
-        const mediaItems = pageOfResults.value.map(url => new UrlItem(url));
-        this.urls.push(...mediaItems);
+        const urlItems = this.currentPage.value.map(page => new UrlItem(page));
+        this.urls.push(...urlItems);
 
         this.working(false);
     }

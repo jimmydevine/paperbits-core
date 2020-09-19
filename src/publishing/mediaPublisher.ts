@@ -50,22 +50,26 @@ export class MediaPublisher implements IPublisher {
     }
 
     public async publish(): Promise<void> {
-        let pagesOfResults: Page<MediaContract>;
-        let nextPageQuery: Query<MediaContract> = Query.from<MediaContract>();
+        const query: Query<MediaContract> = Query.from<MediaContract>();
+        let pagesOfResults = await this.mediaService.search(query);
 
         do {
             const tasks = [];
-            pagesOfResults = await this.mediaService.search(nextPageQuery);
-            nextPageQuery = pagesOfResults.nextPage;
-
             const mediaFiles = pagesOfResults.value;
 
             for (const mediaFile of mediaFiles) {
                 tasks.push(() => this.renderMediaFile(mediaFile));
             }
 
-            await parallel(tasks, 10);
+            await parallel(tasks, 7);
+
+            if (pagesOfResults.takeNext) {
+                pagesOfResults = await pagesOfResults.takeNext();
+            }
+            else {
+                pagesOfResults = null;
+            }
         }
-        while (nextPageQuery);
+        while (pagesOfResults);
     }
 }

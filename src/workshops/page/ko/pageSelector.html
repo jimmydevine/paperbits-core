@@ -29,8 +29,7 @@
     </div>
     <!-- /ko -->
 
-    <div class="flex flex-column flex-item flex-item-grow list"
-        data-bind="scrollable: { onEndReach: $component.loadNextPage }">
+    <div class="flex flex-column flex-item flex-item-grow list" data-bind="scrollable: true">
         <!-- ko foreach: { data: pages, as: 'page' } -->
         <div class="list-item-group">
             <a href="#" role="listitem" class="list-item"
@@ -52,6 +51,9 @@
         <!-- /ko -->
         <!-- ko if: $component.working() -->
         <spinner></spinner>
+        <!-- /ko -->
+        <!-- ko ifnot: $component.working -->
+        <div class="list-edge" data-bind="whenInView: $component.loadNextPage"></div>
         <!-- /ko -->
     </div>
 </div>

@@ -30,8 +30,7 @@
     <!-- /ko -->
 
     <div class="list flex flex-column flex-item flex-item-grow ">
-        <div class="flex-item flex-item-grow" role="list"
-            data-bind="scrollable: { onEndReach: $component.loadNextPage }">
+        <div class="flex-item flex-item-grow" role="list" data-bind="scrollable: true">
             <!-- ko foreach: { data: urls, as: 'url' } -->
             <a href="#" role="listitem" class="list-item"
                 data-bind="click: $component.selectUrl, event: { keydown: $component.keydown }, attr: { title: url.title }">
@@ -41,6 +40,9 @@
             <!-- /ko -->
             <!-- ko if: $component.working -->
             <spinner></spinner>
+            <!-- /ko -->
+            <!-- ko ifnot: $component.working -->
+            <div class="list-edge" data-bind="whenInView: $component.loadNextPage"></div>
             <!-- /ko -->
         </div>
 

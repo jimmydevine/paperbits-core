@@ -24,8 +24,7 @@
 
     <!-- /ko -->
 
-    <div class="flex flex-row flex-wrap flex-item flex-item-grow" role="list"
-        data-bind="scrollable: { onEndReach: $component.loadNextPage }">
+    <div class="flex flex-row flex-wrap flex-item flex-item-grow" role="list" data-bind="scrollable: true">
         <!-- ko foreach: { data: mediaItems, as: 'media' } -->
         <a href="#" role="listitem" class="list-item list-item-image"
             data-bind="click: $component.selectMedia, css: { selected: $component.isSelected(media) }, attr: { 'aria-label': media.fileName() },
@@ -37,6 +36,9 @@
         <!-- /ko -->
         <!-- ko if: $component.working -->
         <spinner></spinner>
+        <!-- /ko -->
+        <!-- ko ifnot: $component.working -->
+        <div class="list-edge" data-bind="whenInView: $component.loadNextPage"></div>
         <!-- /ko -->
     </div>
 

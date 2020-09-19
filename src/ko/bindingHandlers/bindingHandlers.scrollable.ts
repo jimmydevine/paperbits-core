@@ -17,25 +17,17 @@ ko.bindingHandlers["scrollable"] = {
         const verticalScrollBar = element.querySelector(".ps__thumb-y");
         verticalScrollBar.setAttribute("aria-label", "Vertical scrollbar");
 
-        let containerWidth;
-        let containerHeight;
-
         const checkElementSize = (): void => {
             requestAnimationFrame(() => {
                 if (!scrollbar) {
                     return;
                 }
 
-                if (containerWidth !== element.clientWidth || containerHeight !== element.clientHeight) {
-                    containerWidth = element.clientWidth;
-                    containerHeight = element.clientHeight;
-                    scrollbar.update();
-                }
-
+                scrollbar.update();
                 setTimeout(checkElementSize, 100);
             });
         };
-        
+
         checkElementSize();
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {

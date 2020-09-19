@@ -3,9 +3,9 @@ import template from "./pages.html";
 import { IPageService, PageContract } from "@paperbits/common/pages";
 import { ViewManager, View } from "@paperbits/common/ui";
 import { Component, OnMounted } from "@paperbits/common/ko/decorators";
-import { PageItem } from "./pageItem";
 import { ChangeRateLimit } from "@paperbits/common/ko/consts";
 import { Query, Operator, Page } from "@paperbits/common/persistence";
+import { PageItem } from "./pageItem";
 
 
 @Component({
@@ -14,7 +14,6 @@ import { Query, Operator, Page } from "@paperbits/common/persistence";
 })
 export class PagesWorkshop {
     private currentPage: Page<PageContract>;
-
     public readonly searchPattern: ko.Observable<string>;
     public readonly pages: ko.ObservableArray<PageItem>;
     public readonly working: ko.Observable<boolean>;
@@ -40,6 +39,8 @@ export class PagesWorkshop {
     }
 
     public async searchPages(searchPattern: string = ""): Promise<void> {
+        this.working(true);
+
         this.pages([]);
 
         const query = Query
@@ -55,11 +56,12 @@ export class PagesWorkshop {
 
         const pageItems = pageOfResults.value.map(page => new PageItem(page));
         this.pages.push(...pageItems);
+
+        this.working(false);
     }
 
     public async loadNextPage(): Promise<void> {
-        if (!this.currentPage?.takeNext || this.working()) {
-            this.loadNextPage = null;
+        if (!this.currentPage?.takeNext) {
             return;
         }
 

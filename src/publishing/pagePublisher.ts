@@ -177,14 +177,11 @@ export class PagePublisher implements IPublisher {
     }
 
     private async publishNonLocalized(siteSettings: SiteSettingsContract): Promise<void> {
-        let pagesOfResults: Page<PageContract>;
-        let nextPageQuery: Query<PageContract> = Query.from<PageContract>();
+        const query: Query<PageContract> = Query.from<PageContract>();
+        let pagesOfResults = await this.pageService.search(query);
 
         do {
             const tasks = [];
-            pagesOfResults = await this.pageService.search(nextPageQuery);
-            nextPageQuery = pagesOfResults.nextPage;
-
             const pages = pagesOfResults.value;
 
             for (const page of pages) {
@@ -192,8 +189,15 @@ export class PagePublisher implements IPublisher {
             }
 
             await parallel(tasks, 7);
+
+            if (pagesOfResults.takeNext) {
+                pagesOfResults = await pagesOfResults.takeNext();
+            }
+            else {
+                pagesOfResults = null;
+            }
         }
-        while (nextPageQuery);
+        while (pagesOfResults);
     }
 
     private async publishLocalized(locales: LocaleModel[], siteSettings: SiteSettingsContract): Promise<void> {
@@ -204,14 +208,11 @@ export class PagePublisher implements IPublisher {
                 ? null
                 : locale.code;
 
-            let pagesOfResults: Page<PageContract>;
-            let nextPageQuery: Query<PageContract> = Query.from<PageContract>();
+            const query: Query<PageContract> = Query.from<PageContract>();
+            let pagesOfResults = await this.pageService.search(query, localeCode);
 
             do {
                 const tasks = [];
-                pagesOfResults = await this.pageService.search(nextPageQuery, localeCode);
-                nextPageQuery = pagesOfResults.nextPage;
-
                 const pages = pagesOfResults.value;
 
                 for (const page of pages) {
@@ -219,8 +220,15 @@ export class PagePublisher implements IPublisher {
                 }
 
                 await parallel(tasks, 7);
+
+                if (pagesOfResults.takeNext) {
+                    pagesOfResults = await pagesOfResults.takeNext();
+                }
+                else {
+                    pagesOfResults = null;
+                }
             }
-            while (nextPageQuery);
+            while (pagesOfResults);
         }
     }
 

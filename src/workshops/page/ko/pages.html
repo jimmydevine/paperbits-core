@@ -24,8 +24,7 @@
 
     <!-- /ko -->
 
-    <div class="flex flex-column flex-item flex-item-grow" role="list"
-        data-bind="scrollable: { onEndReach: $component.loadNextPage }">
+    <div role="list" class="flex flex-column flex-item flex-item-grow" data-bind="scrollable: true">
         <!-- ko foreach: { data: pages, as: 'page' } -->
         <a href="#" role="listitem" class="list-item flex-grow"
             data-bind="css: { selected: $component.isSelected(page) }, attr: { title: page.title }, activate: $component.selectPage, selectable: true">
@@ -36,6 +35,9 @@
         <!--ko if: $component.working()-->
         <spinner></spinner>
         <!--/ko-->
+        <!-- ko ifnot: $component.working -->
+        <div class="list-edge" data-bind="whenInView: $component.loadNextPage"></div>
+        <!-- /ko -->
     </div>
 
 
