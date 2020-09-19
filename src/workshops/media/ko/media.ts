@@ -50,10 +50,10 @@ export class MediaWorkshop {
 
         const query = Query
             .from<MediaContract>()
-            .orderBy(`title`);
+            .orderBy(`fileName`);
 
         if (searchPattern) {
-            query.where(`title`, Operator.contains, searchPattern);
+            query.where(`fileName`, Operator.contains, searchPattern);
         }
 
         const mediaOfResults = await this.mediaService.search(query);
