@@ -22,7 +22,7 @@ export class CorePublishModule implements IInjectorModule {
         injector.bindToCollection("publishers", AssetPublisher);
         injector.bindToCollection("publishers", MediaPublisher);
         injector.bindToCollection("publishers", PagePublisher);
-        // // injector.bindToCollection("publishers", BlogPublisher);
+        // injector.bindToCollection("publishers", BlogPublisher);
         injector.bindSingleton("sitePublisher", SitePublisher);
         injector.bindSingleton("sitemapBuilder", SitemapBuilder);
         injector.bindSingleton("searchIndexBuilder", SearchIndexBuilder);
