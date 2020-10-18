@@ -22,9 +22,13 @@ export class ButtonViewModelBinder implements ViewModelBinder<ButtonModel, Butto
         viewModel.roles(model.roles);
 
         if (model.iconKey) {
+            // TODO: Refactor
             const segments = model.iconKey.split("/");
             const name = segments[1];
             viewModel.icon(`icon icon-${Utils.camelCaseToKebabCase(name.replace("/", "-"))}`);
+        }
+        else {
+            viewModel.icon(null);
         }
 
         if (model.styles) {
