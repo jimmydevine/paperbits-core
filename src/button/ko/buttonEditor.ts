@@ -65,8 +65,9 @@ export class ButtonEditor {
         this.applyChanges();
     }
 
-    public onIconSelect(glyph: any): void {
-        console.log(glyph);
+    public onIconSelect(iconKey: string): void {
+        this.model.iconKey = iconKey;
+        this.applyChanges();
     }
 
     private applyChanges(): void {
