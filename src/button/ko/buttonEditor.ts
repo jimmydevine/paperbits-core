@@ -4,7 +4,7 @@ import { StyleService } from "@paperbits/styles";
 import { HyperlinkModel } from "@paperbits/common/permalinks";
 import { ButtonModel } from "../buttonModel";
 import { Component, OnMounted, Param, Event } from "@paperbits/common/ko/decorators";
-import { LocalStyles } from "@paperbits/common/styles";
+import { FontContract } from "@paperbits/styles/contracts";
 
 
 @Component({
@@ -63,6 +63,10 @@ export class ButtonEditor {
     public onRoleSelect(roles: string[]): void {
         this.model.roles = roles;
         this.applyChanges();
+    }
+
+    public onIconSelect(glyph: any): void {
+        console.log(glyph);
     }
 
     private applyChanges(): void {
