@@ -24,7 +24,8 @@ export class ButtonModelBinder implements IModelBinder<ButtonModel>  {
         const model = new ButtonModel();
         model.label = contract.label;
         model.roles = contract.roles || [BuiltInRoles.everyone.key];
-        model.styles = contract.styles;
+        model.styles = contract.styles || { appearance: "components/button/default" };
+        model.iconKey = contract.iconKey;
 
         if (contract.hyperlink) {
             model.hyperlink = await this.permalinkResolver.getHyperlinkFromContract(contract.hyperlink);
@@ -44,7 +45,8 @@ export class ButtonModelBinder implements IModelBinder<ButtonModel>  {
             type: "button",
             label: model.label,
             styles: model.styles,
-            roles: roles
+            roles: roles,
+            iconKey: model.iconKey
         };
 
         if (model.hyperlink) {

@@ -53,12 +53,14 @@ import { RoleSelector, RoleInput } from "./workshops/roles/ko";
 import "./ko/bindingHandlers/bindingHandlers.command";
 import "./ko/bindingHandlers/bindingHandlers.dialog";
 import "./ko/bindingHandlers/bindingHandlers.activate";
+import "./ko/bindingHandlers/bindingHandlers.whenInView";
 import { ContentEditorModule } from "./content/ko";
 import { ViewStack } from "./ko/ui/viewStack";
 import { MediaDisplay } from "./workshops/media/ko/mediaDisplay";
 import { Lightbox } from "./workshops/media/ko/lightbox";
 import { LocalStorageCache } from "@paperbits/common/caching";
 import { MapDesignModule } from "./map/ko/map.design.module";
+import { DividerDesignModule } from "./divider/divider.design.module";
 
 
 export class CoreDesignModule implements IInjectorModule {
@@ -124,6 +126,7 @@ export class CoreDesignModule implements IInjectorModule {
         injector.bindModule(new ContentEditorModule());
         injector.bindModule(new CardEditorModule());
         injector.bindModule(new CollapsiblePanelEditorModule());
+        // injector.bindModule(new DividerDesignModule());
         injector.bindToCollection("hyperlinkProviders", UrlHyperlinkProvider);
         injector.bindToCollection("autostart", HostBindingHandler);
         injector.bindToCollection("autostart", DraggablesBindingHandler);
